@@ -1,12 +1,12 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+//var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/comments');
-require('./models/Comments');
+mongoose.connect('mongodb://localhost/candidates');
+require('./models/Candidates');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

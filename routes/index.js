@@ -1,41 +1,53 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Comment = mongoose.model('Comment');
+var Candidates = mongoose.model('Candidate');
 
-router.get('/comments', function(req, res, next) {
-  Comment.find(function(err, comments){
+router.get('/voting', function(req, res, next) {
+  Candidates.find(function(err, candidates){
     if(err){ return next(err); }
-    res.json(comments);
+    res.json(candidates);
   });
 });
 
-router.post('/comments', function(req, res, next) {
-  var comment = new Comment(req.body);
-  comment.save(function(err, comment){
+router.post('/candidates', function(req, res, next) {
+	console.log(req.body);
+  var candidate = new Candidates(req.body);
+  candidate.save(function(err, candidate){
     if(err){ return next(err); }
-    res.json(comment);
+    res.json(candidate);
   });
 });
 
-router.param('comment', function(req, res, next, id) {
-  var query = Comment.findById(id);
-  query.exec(function (err, comment){
+router.param('candidate', function(req, res, next, id) {
+	console.log("in param");
+  var query = Candidates.findById(id);
+  query.exec(function (err, candidate){
     if (err) { return next(err); }
-    if (!comment) { return next(new Error("can't find comment")); }
-    req.comment = comment;
+    if (!candidate) { return next(new Error("can't find candidate")); }
+    req.candidate = candidate;
+	console.log("req");
     return next();
   });
 });
 
-router.get('/comments/:comment', function(req, res) {
-  res.json(req.comment);
+router.get('/candidates/:candidate', function(req, res) {
+	console.log("in get by id");
+  res.json(req.candidate);
 });
 
-router.put('/comments/:comment/upvote', function(req, res, next) {
-  req.comment.upvote(function(err, comment){
+router.put('/voting/:candidate/upvote', function(req, res, next) {
+	console.log(req.body);
+  req.candidate.upvote(function(err, candidate){
     if (err) { return next(err); }
-    res.json(comment);
+    res.json(candidate);
   });
 });
+
+router.delete('/voting/:candidate', function(req, res, next){
+	console.log("in delete route");
+	req.candidate.remove();
+	res.sendStatus(200);
+});
+
 module.exports = router;
